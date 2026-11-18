@@ -1114,7 +1114,7 @@ void main(void){
     init_display();
 
     #ifdef VERSION
-    sprintf(txt_title,"LOCI:ROM %d.%d.%d FW:%d.%d.%d",
+    sprintf(txt_title,"LOCI ROM:%d.%d.%d FW:%d.%d.%d",
         locirom_version[2],locirom_version[1],locirom_version[0],
         locifw_version[2], locifw_version[1], locifw_version[0]);
     #else
