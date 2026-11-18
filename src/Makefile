@@ -63,9 +63,11 @@ $(LIBRARY): $(LSOURCES:.c=.o) $(LASOURCES:.s=.o)
 
 $(PROGRAM): $(ASOURCES:.s=.o) $(SOURCES:.c=.o) $(LIBRARY)
 	$(CC) $(LDFLAGS) -o $@ $^
+	$(CP) $@ $@.rom
 
 $(PROGRAM).rp6502: $(PROGRAM)
 	../tools/rp6502.py -o $(PROGRAM).rp6502 -a 0xC000 create $(PROGRAM)
 
 clean:
-	$(RM) $(SOURCES:.c=.o) $(ASOURCES:.s=.o) $(LSOURCES:.c=.o) $(LASOURCES:.s=.o) $(SOURCES:.c=.d) $(PROGRAM) $(PROGRAM).map $(PROGRAM).rp6502 $(LIBRARY) .asm_check
+	$(RM) $(SOURCES:.c=.o) $(ASOURCES:.s=.o) $(LSOURCES:.c=.o) $(LASOURCES:.s=.o) $(SOURCES:.c=.d)
+	$(RM) $(PROGRAM) $(PROGRAM).rom $(PROGRAM).map $(PROGRAM).rp6502 $(LIBRARY) .asm_check
