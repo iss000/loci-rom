@@ -1,8 +1,11 @@
 CC65_TARGET = none
 
 ifndef CC65_HOME
+CC65_HOME ?= $(shell dirname $$(which cl65))/..
+ifeq ("","$(CC65_HOME)")
 $(warning CC65_HOME not set. Defaulting to /usr/share/cc65)
 export CC65_HOME = /usr/share/cc65
+endif
 endif
 
 SOURCES = main.c tui.c persist.c filemanager.c
@@ -16,7 +19,7 @@ LIBRARY = loci.lib
 
 word-dot = $(word $2,$(subst ., ,$1))
 
-ifdef VERSION 
+ifdef VERSION
 export VERSION
 CFLAGS = -D VERSION
 VERDEFS = --asm-define VERSION --asm-define VERMAJOR=$(call word-dot,$(VERSION),1) --asm-define VERMINOR=$(call word-dot,$(VERSION),2) --asm-define VERPATCH=$(call word-dot,$(VERSION),3)

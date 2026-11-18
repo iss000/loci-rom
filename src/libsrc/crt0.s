@@ -25,9 +25,9 @@ _init:
 
 ; Set cc65 argument stack pointer
     lda #<(__RAM_START__ + __RAM_SIZE__)
-    sta sp
+    sta c_sp
     lda #>(__RAM_START__ + __RAM_SIZE__)
-    sta sp+1
+    sta c_sp+1
 
     jsr check_romtag
 
@@ -67,8 +67,8 @@ _init:
     lda #%11000000
     sta VIA_IER
 
-    ; Since this is an slow process, we set the VIA timer to 
-    ; issue interrupts at 25Hz, instead of 100 Hz. This is 
+    ; Since this is an slow process, we set the VIA timer to
+    ; issue interrupts at 25Hz, instead of 100 Hz. This is
     ; not necessary -- it depends on your needs
     lda #<40000
     sta VIA_T1LL
