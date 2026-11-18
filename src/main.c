@@ -195,8 +195,8 @@ tui_widget ui[] = {
 #define IDX_BOOT 53
 #define IDX_TIOR 55
 
-const uint8_t tui_eject_idx[] = { 
-    IDX_EJECT_DF0, 
+const uint8_t tui_eject_idx[] = {
+    IDX_EJECT_DF0,
     IDX_EJECT_DF1,
     IDX_EJECT_DF2,
     IDX_EJECT_DF3,
@@ -282,7 +282,7 @@ uint8_t dir_fill(char* dname){
         if(fil->d_name[0] == 0){            //End of directory listing
             break;
         }
-        dir_ptr_list[-(++dir_entries)] = &dir_buf[tail];  
+        dir_ptr_list[-(++dir_entries)] = &dir_buf[tail];
         if(fil->d_attrib & DIR_ATTR_DIR){
             dir_buf[tail++] = '/';
         }else if(fil->d_attrib & DIR_ATTR_SYS){
@@ -322,9 +322,9 @@ uint8_t tap_fill(void){
     unsigned int start_addr, end_addr, size;
     dir_entries = 0;
     dir_offset = 0;
-    
+
     TAP.cmd = TAP_CMD_REW;
-                        
+
     //Using fixed 64 byte entries for tape content
     while((dir_entries < (DIR_BUF_SIZE/64))){
         counter = tap_read_header(&hdr);
@@ -341,7 +341,7 @@ uint8_t tap_fill(void){
             dir_entries + 1,
             hdr.filename[0] ? (char*)hdr.filename : "<no name>",
             hdr.type == 0x80 ? "BIN" : "BAS",    //TODO Incomplete Type decode
-            start_addr, 
+            start_addr,
             size
         );
         dir_ptr_list[-(dir_entries+1)] = &dir_buf[(dir_entries*64)+4];
@@ -391,14 +391,14 @@ void parse_files_to_widget(void){
         dir_rpage[0] = '>';
         popup[IDX_RPAGE].type = TUI_SEL;
     }
-    
+
 }
 
 uint8_t update_dir_ui(void){
     uint8_t dir_ok;
     dir_needs_refresh = true;
     dir_ok = dir_fill(loci_cfg.path);
-    parse_files_to_widget();    
+    parse_files_to_widget();
     tui_draw(popup);
     if(dir_entries)
         tui_set_current(POPUP_FILE_START);
@@ -585,7 +585,7 @@ void DisplayKey(unsigned char key)
                         parse_files_to_widget();
                         tui_draw(popup);
                     }
-                }                          
+                }
             }
             break;
         case(KEY_UP):
@@ -622,7 +622,7 @@ void DisplayKey(unsigned char key)
                     case(IDX_MAP_REW):
                     case(IDX_MAP_RV1):
                     case(IDX_MAP_FFW):
-                        if(rv1 < 31) 
+                        if(rv1 < 31)
                             rv1++;
                         //DBG_STATUS("map+");
                         rv1 = tune_tmap(rv1);
@@ -639,7 +639,7 @@ void DisplayKey(unsigned char key)
                     case(IDX_MAP_REW):
                     case(IDX_MAP_RV1):
                     case(IDX_MAP_FFW):
-                        if(rv1 > 0) 
+                        if(rv1 > 0)
                             rv1--;
                         //DBG_STATUS("map-");
                         rv1 = tune_tmap(rv1);
@@ -652,7 +652,7 @@ void DisplayKey(unsigned char key)
             break;
         case(KEY_SPACE):
             //Exit from warning
-            if(!dir_ok){    
+            if(!dir_ok){
                 dir_ok = 1;
                 tui_clear_box(1);
                 tui_draw(popup);
@@ -689,7 +689,7 @@ void DisplayKey(unsigned char key)
                         loci_cfg.ald_on ^= 0x01;
                         update_load_btn();
                         tui_toggle_highlight(IDX_TAP_LOAD);
-                        break; 
+                        break;
                     case(IDX_ROM):
                         loci_cfg.b11_on ^= 0x01;
                         update_rom_btn();
@@ -730,7 +730,7 @@ void DisplayKey(unsigned char key)
                         boot(false);
                         break;
                     case(IDX_MAP_REW):
-                        if(rv1 > 0) 
+                        if(rv1 > 0)
                             rv1--;
                         //DBG_STATUS("map-");
                         rv1 = tune_tmap(rv1);
@@ -739,7 +739,7 @@ void DisplayKey(unsigned char key)
                         tui_draw_widget(IDX_MAP_RV1);
                         break;
                     case(IDX_MAP_FFW):
-                        if(rv1 < 31) 
+                        if(rv1 < 31)
                             rv1++;
                         //DBG_STATUS("map+");
                         rv1 = tune_tmap(rv1);
@@ -861,9 +861,9 @@ void DisplayKey(unsigned char key)
                         }
                         if(drive<6)
                             if(mount(drive,loci_cfg.path,tmp_ptr)==0x00){
-                                loci_cfg.mounts |= 1u << drive;
+                                loci_cfg.mounts |= (1u << drive);
                             }else{
-                                loci_cfg.mounts &= ~1u << drive;
+                                loci_cfg.mounts &= ~(1u << drive);
                             }
                         else
                             tap_seek(*((long*)(tmp_ptr-4-1)));  //Seek to start of header
@@ -949,7 +949,7 @@ void DisplayKey(unsigned char key)
                     tui_draw_widget(idx);
                     tui_toggle_highlight(idx);
                 }
-            }else{  
+            }else{
                 //Main menu keyboard shortcuts
                 if(calling_widget == -1){
                     switch(key){
@@ -985,7 +985,7 @@ void DisplayKey(unsigned char key)
                             tui_draw_widget(IDX_TIOR);
                             break;
                     }
-                }else{  
+                }else{
                     //Directory popup keyboard shortcuts
                     if(dir_ok){
                         switch(key){
@@ -1023,15 +1023,15 @@ void DisplayKey(unsigned char key)
             }
     }
 
-    if(y>35) 
+    if(y>35)
         y = 0;
 }
 
 unsigned char Mouse(unsigned char key){
     static uint16_t prev_pos = 0;
     static int8_t sx = 0, sy = 0;
-    static uint8_t  prev_x = 0, prev_y = 0, prev_btn = 0, cursor = 0; 
-    
+    static uint8_t  prev_x = 0, prev_y = 0, prev_btn = 0, cursor = 0;
+
     uint16_t pos;
     uint8_t x,y,btn;
     char *screen;
@@ -1039,7 +1039,7 @@ unsigned char Mouse(unsigned char key){
 
     if(!loci_cfg.mou_on)
         return key;
-    
+
     screen = TUI_SCREEN;
     MIA.addr0 = 0x7000;
     MIA.step0 = 1;
@@ -1066,7 +1066,7 @@ unsigned char Mouse(unsigned char key){
         prev_x = x;
         prev_y = y;
     }
-    
+
     if(((btn ^ prev_btn) & btn & 0x01)){  //Left mouse button release
         widget = tui_hit(sx,sy);
         if(widget){
@@ -1074,7 +1074,7 @@ unsigned char Mouse(unsigned char key){
             tui_set_current(widget);
             key = KEY_SPACE;
         }
-    } 
+    }
     prev_btn = btn;
     return key;
 }
@@ -1112,7 +1112,7 @@ void main(void){
 
     tui_cls(3);
     init_display();
-    
+
     #ifdef VERSION
     sprintf(txt_title,"LOCI ROM %d.%d.%d FW %d.%d.%d",
         locirom_version[2],locirom_version[1],locirom_version[0],
@@ -1142,7 +1142,7 @@ void main(void){
         loci_cfg.drv_names[5][0] = 0x00;
         loci_cfg.tui_pos = IDX_DF0;
     }
-   
+
     rv1 = loci_tmap;
     sprintf(txt_rv1,"%02d",rv1);
     sprintf(&txt_tior[5],"%02d",loci_tior);
@@ -1163,11 +1163,11 @@ void main(void){
         i = mia_get_vmode();
         //sprintf(TUI_SCREEN_XY_CONST(32,0),"%02x",i);
         if(i & 0x04)
-            TUI_PUTC_CONST(34,0,'H');   
+            TUI_PUTC_CONST(34,0,'H');
         else
             TUI_PUTC_CONST(34,0,'T');
         if(i & 0x02)
-            TUI_PUTC_CONST(35,0,'5');   
+            TUI_PUTC_CONST(35,0,'5');
         else
             TUI_PUTC_CONST(35,0,'6');
         TUI_PUTC_CONST(36,0,'0');
@@ -1182,21 +1182,21 @@ void main(void){
     //parse_files_to_widget();
     //tui_draw(popup);
     //tui_draw_box(10,28);
-    
+
     InitKeyboard();
 
     while(1){
         char kb;
         unsigned char key;
         key = ReadKeyNoBounce();
-        if(key && tui_get_type(tui_get_current()) == TUI_INP){ 
+        if(key && tui_get_type(tui_get_current()) == TUI_INP){
             key = ReadKey();
         }
         key = Mouse(key);
         if(key)
             DisplayKey(key);
         TUI_PUTC_CONST(39,1,txt_spinner[(irq_ticks & 0x03)]);
-        
+
         kb = 0;
         i = 7;
         do{
